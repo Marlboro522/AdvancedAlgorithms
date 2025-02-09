@@ -1,0 +1,77 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+\subsection*{Dijkstra’s Algorithm on Example Graph}
+\paragraph{Graph Description:}
+Nodes: \( A, B, C, D, E, F \)  
+Edges:
+\begin{itemize}
+    \item \( A \to B (1) \)
+    \item \( A \to C (4) \)
+    \item \( B \to D (2) \)
+    \item \( C \to E (5) \)
+    \item \( D \to F (6) \)
+    \item \( E \to F (3) \)
+\end{itemize}
+
+\paragraph{Steps:}
+\begin{enumerate}
+    \item Initialize \( d[A] = 0 \), \( d[B] = d[C] = d[D] = d[E] = d[F] = \infty \). Priority queue: \( Q = \{A (0)\} \).
+    \item Dequeue \( A \), relax \( B \) (\( d[B] = 1 \)) and \( C \) (\( d[C] = 4 \)). Update \( Q = \{B (1), C (4)\} \).
+    \item Dequeue \( B \), relax \( D \) (\( d[D] = 3 \)). Update \( Q = \{C (4), D (3)\} \).
+    \item Dequeue \( D \), relax \( F \) (\( d[F] = 9 \)). Update \( Q = \{C (4), F (9)\} \).
+    \item Dequeue \( C \), relax \( E \) (\( d[E] = 9 \)). Update \( Q = \{F (9), E (9)\} \).
+    \item Dequeue \( F \), and finish.
+\end{enumerate}
+
+\paragraph{Shortest Paths and Costs:}
+\[
+\begin{aligned}
+    A \to B &: 1 \\
+    A \to C &: 4 \\
+    A \to D &: 3 \\
+    A \to E &: 9 \\
+    A \to F &: 9
+\end{aligned}
+\]
+
+\subsection*{4. A* Algorithm on Example Graph}
+\paragraph{Heuristic Values:}
+\[
+h(A) = 10, \, h(B) = 8, \, h(C) = 6, \, h(D) = 4, \, h(E) = 2, \, h(F) = 0
+\]
+
+\paragraph{Steps:}
+\begin{enumerate}
+    \item Initialize \( d[A] = 0 \), \( Q = \{A (10)\} \).
+    \item Dequeue \( A \), relax \( B \) (\( d[B] = 1, \text{ priority } 9 \)) and \( C \) (\( d[C] = 4, \text{ priority } 10 \)). Update \( Q = \{B (9), C (10)\} \).
+    \item Dequeue \( B \), relax \( D \) (\( d[D] = 3, \text{ priority } 7 \)). Update \( Q = \{D (7), C (10)\} \).
+    \item Dequeue \( D \), relax \( F \) (\( d[F] = 9, \text{ priority } 9 \)). Update \( Q = \{F (9), C (10)\} \).
+    \item Dequeue \( F \), goal reached.
+\end{enumerate}
+
+\paragraph{Shortest Path:}
+\[
+A \to B \to D \to F
+\]
+\[
+\text{Cost: } 9
+\]
+
+\subsection*{5. Graphs Where A* Isn’t Helpful}
+\paragraph{Graph 1: Sparse Graph with Poor Heuristics}
+If the heuristic \( h(u) \) significantly overestimates or underestimates distances, A* degenerates into Dijkstra’s algorithm, exploring many unnecessary nodes.
+
+\paragraph{Graph 2: Dense Graph with Uniform Weights}
+If the graph is dense and the heuristic adds no useful information, A* may perform as poorly as Dijkstra.
+
+\paragraph{Fixes:}
+\begin{itemize}
+    \item Use an admissible and consistent heuristic.
+    \item Implement bidirectional search to reduce the search space.
+\end{itemize}
+
+\end{document}

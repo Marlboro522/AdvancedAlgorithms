@@ -1,5 +1,23 @@
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fls
 *.fdb_latexmk
 *.log
 *.synctex.gz
-*.fls
-*.aux
+*.toc
+*.out
+*.tex
+
+#pythonignores
+.venv
+road-road-usa
+.ipynb_checkpoints
+*.png
+*.graphml
+cache
+*/.DS_Store
+*.zip
+*.json
