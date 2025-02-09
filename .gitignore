@@ -11,13 +11,22 @@
 *.out
 *.tex
 
-#pythonignores
-.venv
-road-road-usa
-.ipynb_checkpoints
+# Ignore all PDF files and their folders
+*.pdf
+**/*.pdf
+
+
+# Python ignores
+.venv/
+road-road-usa/
+.ipynb_checkpoints/
 *.png
 *.graphml
-cache
-*/.DS_Store
+cache/
+**/cache/
 *.zip
 *.json
+
+# macOS system files
+.DS_Store
+*/.DS_Store
