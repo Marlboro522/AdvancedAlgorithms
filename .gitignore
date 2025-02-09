@@ -27,6 +27,7 @@ cache/
 *.zip
 *.json
 .pytest_cache
+*.pyc
 
 # macOS system files
 .DS_Store
