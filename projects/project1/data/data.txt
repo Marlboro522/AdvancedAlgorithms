@@ -1,0 +1,32 @@
+++++++++++++++++++++nodes++++++++++++++++++++
+                     y           x            highway  ref  street_count junction                     geometry
+osmid                                                                                                         
+32658073     38.938145 -104.813098  motorway_junction  149             3      NaN   POINT (-104.8131 38.93814)
+32658093     38.900892 -104.828675  motorway_junction  146             3      NaN  POINT (-104.82867 38.90089)
+32658094     38.893717 -104.831636                NaN  NaN             3      NaN  POINT (-104.83164 38.89372)
+32658108     38.870775 -104.834038                NaN  NaN             3      NaN  POINT (-104.83404 38.87078)
+55683299     38.855141 -104.744973                NaN  NaN             3      NaN  POINT (-104.74497 38.85514)
+...                ...         ...                ...  ...           ...      ...                          ...
+12558406673  38.940660 -104.684435                NaN  NaN             3      NaN  POINT (-104.68444 38.94066)
+12558406677  38.940131 -104.683497                NaN  NaN             3      NaN   POINT (-104.6835 38.94013)
+12558406678  38.940171 -104.683974                NaN  NaN             3      NaN  POINT (-104.68397 38.94017)
+12558406681  38.940599 -104.683108                NaN  NaN             1      NaN   POINT (-104.68311 38.9406)
+12558406682  38.940130 -104.683108                NaN  NaN             1      NaN  POINT (-104.68311 38.94013)
+
+[20662 rows x 7 columns]
+++++++++++++++++++++edges++++++++++++++++++++
+                                                                 osmid        highway   lanes  oneway reversed  ...  bridge junction width access tunnel
+u           v           key                                                                                     ...                                     
+32658073    2043229223  0                        [1042828013, 7670935]  motorway_link  [1, 3]    True    False  ...     NaN      NaN   NaN    NaN    NaN
+            268703302   0              [201071441, 43107747, 45308292]       motorway       3    True    False  ...     yes      NaN   NaN    NaN    NaN
+32658093    540066805   0                        [229737528, 43107887]  motorway_link  [2, 4]    True    False  ...     NaN     spui   NaN    NaN    NaN
+            32658094    0    [4951984, 4951983, 1042579382, 229737175]       motorway       3    True    False  ...     yes      NaN   NaN    NaN    NaN
+32658094    5059331082  0    [4951984, 4951985, 1042841979, 136556831]       motorway       3    True    False  ...     yes      NaN   NaN    NaN    NaN
+...                                                                ...            ...     ...     ...      ...  ...     ...      ...   ...    ...    ...
+12558406677 12558406625 0                                   1356857924    residential     NaN   False    False  ...     NaN      NaN   NaN    NaN    NaN
+12558406678 12558406677 0                                   1356857910    residential     NaN   False     True  ...     NaN      NaN   NaN    NaN    NaN
+            12558406659 0                                   1356857921    residential     NaN    True    False  ...     NaN      NaN   NaN    NaN    NaN
+12558406681 12558406625 0                                   1356857912    residential     NaN   False     True  ...     NaN      NaN   NaN    NaN    NaN
+12558406682 12558406677 0                                   1356857913    residential     NaN   False     True  ...     NaN      NaN   NaN    NaN    NaN
+
+[50842 rows x 15 columns]
