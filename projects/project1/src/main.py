@@ -1,111 +1,110 @@
+import osmnx as ox
+import networkx as nx
 import heapq
+import time
+
+# Load Colorado Springs road network
+graph_source = "resources/colorado_springs.graphml"
+G = ox.load_graphml(graph_source)
+
+# Define source and target nodes
+source = 7153623736
+target = 555759091
+
+### **1️⃣ Run NetworkX's Built-in Dijkstra**
+start_time = time.time()
+nx_path = nx.shortest_path(G, source, target, weight="length", method="dijkstra")
+nx_distance = nx.shortest_path_length(G, source, target, weight="length")
+nx_time = time.time() - start_time
+
+print("\n🔹 NetworkX Dijkstra Results:")
+print(f"✔ Shortest Distance: {nx_distance:.2f} meters")
+print(f"✔ Number of Nodes in Path: {len(nx_path)}")
+print(f"✔ Computation Time: {nx_time:.5f} seconds")
 
 
-def dijkstra(graph, start_node):
+### **2️⃣ Run Our Custom Dijkstra Algorithm**
+def dijkstra_osmnx(G, source, target):
+    """
+    Implements Dijkstra's algorithm for an OSMnx graph.
+
+    Parameters:
+        G (networkx.Graph): OSMnx road network graph.
+        source (int): Source node ID.
+        target (int): Target node ID.
+
+    Returns:
+        tuple: (shortest distance, shortest path as list of nodes)
+    """
     # Step 1: Initialize distances and priority queue
-    distances = {node: float("inf") for node in graph}  # d[v] = ∞ for all nodes v
-    distances[start_node] = 0  # d[start_node] = 0
+    distances = {node: float("inf") for node in G.nodes}
+    distances[source] = 0
+    priority_queue = [(0, source)]
+    predecessors = {}
 
-    # PriorityQueue Q = {all nodes in Graph}
-    pq = [(0, start_node)]  # Stores (distance, node)
+    while priority_queue:
+        current_distance, current_node = heapq.heappop(priority_queue)
 
-    while pq:  # While Q is not empty
-        # Step 2: Extract u = node in Q with smallest d[u]
-        current_distance, u = heapq.heappop(pq)
-        print(graph[u])
+        # Stop early if we reach the target
+        if current_node == target:
+            break
 
-        # Step 3: For each neighbor v of u
-        for neighbor, weight in graph[u]:
-            print(f"Neighbor: {neighbor}, Weight: {weight}")
-            # Relaxation: Update distances if a shorter path is found
-            if current_distance + weight < distances[neighbor]:
-                distances[neighbor] = current_distance + weight
-                # Add the updated distance to the priority queue
-                heapq.heappush(pq, (distances[neighbor], neighbor))
+        # Skip processing if we already have a better distance
+        if current_distance > distances[current_node]:
+            continue
 
-    return distances
+        # Step 2: Explore neighbors
+        for neighbor in G.neighbors(current_node):
+            edge_data = G.get_edge_data(current_node, neighbor, default={})
+            edge_length = edge_data[0].get("length", float("inf"))  # Get road distance
 
+            new_distance = distances[current_node] + edge_length
 
-import heapq
+            # Step 3: Update distances if a shorter path is found
+            if new_distance < distances[neighbor]:
+                distances[neighbor] = new_distance
+                predecessors[neighbor] = current_node
+                heapq.heappush(priority_queue, (new_distance, neighbor))
 
+    # Step 4: Reconstruct the shortest path
+    path = []
+    node = target
+    while node in predecessors:
+        path.append(node)
+        node = predecessors[node]
+    path.append(source)
+    path.reverse()
 
-def a_star(graph, start_node, goal_node, heuristic):
-    # Step 1: Initialize distances and priority queue
-    distances = {node: float("inf") for node in graph}  # d[v] = ∞ for all nodes v
-    distances[start_node] = 0  # d[start_node] = 0
-
-    # Priority queue stores (distance + heuristic, distance, node)
-    pq = []
-    heapq.heappush(pq, (0 + heuristic[start_node], 0, start_node))  # (f(u), g(u), node)
-
-    while pq:  # While Q is not empty
-        # Log the priority queue
-        print(f"Priority Queue: {pq}")
-
-        # Step 2: Extract u = node in Q with smallest d[u] + h(u)
-        f_u, current_distance, u = heapq.heappop(pq)
-
-        # Step 3: If u == goal_node, return the shortest distance
-        if u == goal_node:
-            return distances[goal_node]
-
-        # Step 4: For each neighbor v of u
-        for neighbor, weight in graph[u]:
-            tentative_distance = current_distance + weight  # g(u) + weight(u, v)
-
-            # Relaxation step: Update distances if a shorter path is found
-            if tentative_distance < distances[neighbor]:
-                distances[neighbor] = tentative_distance
-                f_v = tentative_distance + heuristic[neighbor]  # f(v) = g(v) + h(v)
-                heapq.heappush(
-                    pq, (f_v, tentative_distance, neighbor)
-                )  # Push (f(v), g(v), v)
-
-    return distances[goal_node] if distances[goal_node] < float("inf") else None
+    return distances[target], path
 
 
-# Example Graph as an adjacency list
-graph = {
-    "A": [("B", 1), ("C", 4)],
-    "B": [("E", 7), ("D", 2)],
-    "C": [("D", 4)],
-    "D": [("F", 6)],
-    "E": [("F", 3)],
-    "F": [],
-}
+# Run custom Dijkstra's algorithm
+start_time = time.time()
+custom_distance, custom_path = dijkstra_osmnx(G, source, target)
+custom_time = time.time() - start_time
 
-# Example Heuristic Values for A*
-heuristic = {
-    "A": 10,
-    "B": 8,
-    "C": 6,
-    "D": 4,
-    "E": 2,
-    "F": 0,
-}
+print("\n🔹 Custom Dijkstra Results:")
+print(f"✔ Shortest Distance: {custom_distance:.2f} meters")
+print(f"✔ Number of Nodes in Path: {len(custom_path)}")
+print(f"✔ Computation Time: {custom_time:.5f} seconds")
 
-start_node = "A"
-goal_node = "F"
 
-shortest_distance = a_star(graph, start_node, goal_node, heuristic)
-if shortest_distance is not None:
-    print(f"Shortest distance from {start_node} to {goal_node}: {shortest_distance}")
+### **3️⃣ Verify Results**
+print("\n🔹 🔍 Verifying Results:")
+
+# Check if distances match
+if abs(nx_distance - custom_distance) < 1e-5:  # Allow a small floating-point error
+    print("✅ Shortest distance matches NetworkX!")
 else:
-    print(f"No path exists from {start_node} to {goal_node}")
+    print("❌ Distance mismatch!")
 
+# Check if paths match
+if nx_path == custom_path:
+    print("✅ Shortest path matches NetworkX!")
+else:
+    print("❌ Path mismatch!")
 
-# graph = {
-#     "A": [("B", 1), ("C", 4)],
-#     "B": [("E", 7), ("D", 2)],
-#     "C": [("D", 4)],
-#     "D": [("F", 6)],
-#     "E": [("F", 3)],
-#     "F": [],
-# }
-
-# start_node = "A"
-# # goal_node = "F"
-
-# # print(graph.keys())
-# shortest_distance = dijkstra(graph, start_node)
-# print(f"Shortest distance from {start_node}: {shortest_distance}")
+# Compare performance
+speedup = nx_time / custom_time if custom_time > 0 else float("inf")
+print(f"\n🚀 Speed Comparison:")
+print(f"Custom Dijkstra is {speedup:.2f}x faster/slower than NetworkX.")

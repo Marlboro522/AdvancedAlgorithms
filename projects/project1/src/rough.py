@@ -1,32 +1,22 @@
-import random
-import osmnx as ox
+import osmnx as os
 import networkx as nx
-import time
-import matplotlib.pyplot as plt
+import random
 
-# Load the Colorado Springs graph
-graph_source = "resources/colorado_springs.graphml"
-G = ox.load_graphml(graph_source)
+colorado_springs = "resources/colorado_springs.graphml"
 
+G = os.load_graphml(colorado_springs)
 
-s, t = 7153623736, 555759091
+print(f"Nodes: {len(G.nodes)} Edges: {len(G.edges)}")
 
+node = random.choice(list(G.nodes))
 
-start_time = time.time()
+lat, lon = G.nodes[node]["y"], G.nodes[node]["x"]
+print(f"Node: {node} Latitude: {lat} Longitude: {lon}")
+# bounding box
+north = max(G.nodes[node]["y"] for node in G.nodes)
+south = min(G.nodes[node]["y"] for node in G.nodes)
+east = max(G.nodes[node]["x"] for node in G.nodes)
+west = min(G.nodes[node]["x"] for node in G.nodes)
 
-
-shortest_path = nx.shortest_path(
-    G, source=s, target=t, weight="length", method="dijkstra"
-)
-
-end_time = time.time()
-print(f"Dijkstra Computation Time: {end_time - start_time:.5f} seconds")
-
-
-fig, ax = ox.plot_graph_route(
-    G, shortest_path, route_linewidth=4, node_size=30, bgcolor="white"
-)
-
-
-def custom_variant(G, source, target):
-    pass
+# get the nodes within the bounding box
+print(f"North: {north}, South: {south}, East: {east}, West: {west}")
