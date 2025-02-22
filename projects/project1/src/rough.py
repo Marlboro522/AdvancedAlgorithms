@@ -127,10 +127,20 @@ def get_lat_lon(node):
 
 
 # print(f"Most Common Road Type: {most_common_road} with {most_common_count} roads")
+import time
 
+start_time = time.time()
 centrality = nx.betweenness_centrality(G, weight="length")
+end_time = time.time()
 
-print(centrality)
+# start_time = time.time()
+# centrality = nx.betweenness_centrality(G, weight="length")
+# end_time = time.time()
+
+print(
+    f"Centrality Calculation Time for coclroado Springs is: {(end_time - start_time)/60:.6f} Minutes."
+)
+# print(centrality)
 
 most_central_node = max(centrality, key=centrality.get)
 most_central_score = centrality[most_central_node]
@@ -139,9 +149,6 @@ print(
     f"Most Central Node: {most_central_node} with centrality score: {most_central_score:.5f}"
 )
 
-most_central_node = max(centrality, key=centrality.get)
-most_central_score = centrality[most_central_node]
-
-print(
-    f"Most Central Node: {most_central_node} with centrality score: {most_central_score:.5f}"
-)
+# Nodes: 20662 Edges: 50842
+# Centrality Calculation Time for coclroado Springs is: 90.789877 Minutes.
+# Most Central Node: 55744303 with centrality score: 0.12405
