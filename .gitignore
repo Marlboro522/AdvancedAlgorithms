@@ -28,6 +28,7 @@ cache/
 *.json
 .pytest_cache
 *.pyc
+*.parquet
 
 # macOS system files
 .DS_Store
