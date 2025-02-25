@@ -9,8 +9,24 @@ import pandas as pd
 import seaborn as sns
 
 
-def get_distance(s, t, tnr_table):
-    return tnr_table.loc[tnr_table["node"] == s]["data"].values[0][t]
+def convert_tnr_to_dict(tnr_table):
+    """
+    Converts the TNR table DataFrame to a nested dictionary for fast lookups.
+    """
+    print("[DEBUG] Converting TNR table to dictionary...")
+
+    tnr_dict = {}
+    for _, row in tnr_table.iterrows():
+        node = row["node"]
+        tnr_dict[node] = row["data"]  # Store "data" as the nested dictionary
+
+    print(f"[DEBUG] TNR dictionary created with {len(tnr_dict)} transit nodes.")
+    return tnr_dict
+
+
+def get_distance(s, t, tnr_dict):
+    # return tnr_table.loc[tnr_table["node"] == s]["data"].values[0][t]
+    tnr_dict.get(s, {}).get(t, float("inf"))
 
 
 def load_final_transit_nodes(output_dir="preprocessing_output"):
@@ -179,7 +195,7 @@ def test_tnr_vs_dijkstra(
     G,
     transit_nodes,
     tnr_table,
-    D_local_values=[1000, 5000, 10000, 15000, 20000, 30000, 40000, 50000, 60000],
+    D_local_values=[n for n in range(10000, 11000, 1000)],
     num_tests=10,
 ):
     """
@@ -226,19 +242,17 @@ def test_tnr_vs_dijkstra(
             )
 
             # **Step 4: Store Results**
-            results.append(
-                {
-                    "D_local": D_local,
-                    "Source": source,
-                    "Target": target,
-                    "Dijkstra Distance": dijkstra_distance,
-                    "TNR Distance": tnr_distance,
-                    "Dijkstra Time": dijkstra_time,
-                    "TNR Time": tnr_time,
-                    "Speedup": speedup,
-                    "Error (%)": percentage_error,
-                }
-            )
+        results.append(
+            {
+                "D_local": D_local,
+                "Dijkstra Distance": dijkstra_distance,
+                "TNR Distance": tnr_distance,
+                "Dijkstra Time": dijkstra_time,
+                "TNR Time": tnr_time,
+                "Speedup": speedup,
+                "Error (%)": percentage_error,
+            }
+        )
 
     # **Step 5: Convert Results to DataFrame & Plot**
     df = pd.DataFrame(results)
@@ -293,9 +307,13 @@ if __name__ == "__main__":
     print("[DEBUG] Loading transit nodes and TNR distance data...")
     transit_nodes = load_final_transit_nodes()
     tnr_table = load_precomputed_tnr_distances()
+    print(tnr_table.head())
+    tnr_dict = convert_tnr_to_dict(tnr_table)
+    test= tnr_dict.get('55771189',{}).get('10005025643',float('inf'))
+    print(test)
 
-    results_df = test_tnr_vs_dijkstra(G, transit_nodes, tnr_table)
-    print(results_df.head())
+    # results_df = test_tnr_vs_dijkstra(G, transit_nodes, tnr_table)
+    # print(results_df.head())
 # print first five elementns of tnr_table
 # print(tnr_table.head())
 # print first element of tnr_table for node "506867020"
