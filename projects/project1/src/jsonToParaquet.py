@@ -56,7 +56,7 @@ def main():
     json_path = "preprocessing_output/transit_node_paths.json"
     parquet_path = "preprocessing_output/transit_node_paths.parquet"
 
-    stream_json_to_parquet(json_path, parquet_path, batch_size=100)
+    stream_json_to_parquet(json_path, parquet_path, batch_size=50)
 
 
 if __name__ == "__main__":

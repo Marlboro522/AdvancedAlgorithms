@@ -17,6 +17,7 @@ import os
 def precompute_and_save_nearest_transit_nodes_parquet(
     G, transit_nodes, filename="nearest_transit_nodes.parquet"
 ):
+    length = len(G.nodes())
     print(
         f"[INFO] Precomputing nearest transit nodes, this will take time and only done once per map"
     )
@@ -29,6 +30,7 @@ def precompute_and_save_nearest_transit_nodes_parquet(
     nearest_transit = []
 
     for node in G.nodes():
+        length -= 1
         min_distance = float("inf")
         nearest_node = None
 
@@ -40,7 +42,7 @@ def precompute_and_save_nearest_transit_nodes_parquet(
                     nearest_node = t
             except nx.NetworkXNoPath:
                 continue
-
+        print(f"[INFO] {length} nodes left")
         nearest_transit.append({"node": node, "nearest_transit": nearest_node})
 
     df = pd.DataFrame(nearest_transit)
