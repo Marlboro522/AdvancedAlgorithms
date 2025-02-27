@@ -53,10 +53,13 @@ def main():
     """
     Converts large transit_node_paths.json to Parquet format using streaming.
     """
-    json_path = "preprocessing_output/transit_node_paths.json"
-    parquet_path = "preprocessing_output/transit_node_paths.parquet"
+    # json_path = "preprocessing_output/transit_node_paths.json"
+    # parquet_path = "preprocessing_output/transit_node_paths.parquet"
 
-    stream_json_to_parquet(json_path, parquet_path, batch_size=50)
+    # stream_json_to_parquet(json_path, parquet_path, batch_size=50)
+    json_path = "preprocessing_output/transit_node_distances.json"
+    parquet_path = "preprocessing_output/transit_node_distances.parquet"
+    stream_json_to_parquet(json_path, parquet_path, batch_size=100)
 
 
 if __name__ == "__main__":

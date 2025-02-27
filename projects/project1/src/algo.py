@@ -29,6 +29,7 @@ def precompute_and_save_nearest_transit_nodes_parquet(
 
     nearest_transit = []
 
+    start_time = time.time()
     for node in G.nodes():
         length -= 1
         min_distance = float("inf")
@@ -42,7 +43,7 @@ def precompute_and_save_nearest_transit_nodes_parquet(
                     nearest_node = t
             except nx.NetworkXNoPath:
                 continue
-        print(f"[INFO] {length} nodes left")
+        print(f"[INFO] {length} nodes left took {start_time-time.time()} seconds")
         nearest_transit.append({"node": node, "nearest_transit": nearest_node})
 
     df = pd.DataFrame(nearest_transit)
@@ -63,7 +64,7 @@ def convert_tnr_to_dict(tnr_table):
     tnr_dict = {}
     for _, row in tnr_table.iterrows():
         node = row["node"]
-        tnr_dict[node] = row["data"]  # Store "data" as the nested dictionary
+        tnr_dict[node] = row["path"]  # Store "data" as the nested dictionary
 
     print(f"[DEBUG] TNR dictionary created with {len(tnr_dict)} transit nodes.")
     return tnr_dict
@@ -102,8 +103,8 @@ def load_precomputed_tnr_distances(output_dir="preprocessing_output"):
     df = pd.read_parquet(f"{output_dir}/transit_node_distances.parquet")
 
     print("[DEBUG] Loaded TNR distances successfully.")
-    # print(df.head())
-    # print(f"[DEBUG] Example Node Type in TNR Table: {type(df['node'].values[0])}")
+    print(df.head())
+    print(f"[DEBUG] Example Node Type in TNR Table: {type(df['node'].values[0])}")
 
     return df  # Keep stored as they are
 
@@ -395,7 +396,7 @@ if __name__ == "__main__":
     )
 
     results_df = test_tnr_vs_dijkstra(G, nearest_transit_nodes, tnr_dict)
-    print(results_df.head())
+    print(results_df)
 # print first five elementns of tnr_table
 # print(tnr_table.head())
 # print first element of tnr_table for node "506867020"

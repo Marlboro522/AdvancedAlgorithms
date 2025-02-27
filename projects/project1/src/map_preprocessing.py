@@ -7,12 +7,14 @@ from shapely.geometry import box
 import matplotlib.pyplot as plt
 import multiprocessing
 
+
 def load_graph(path: str):
     if not os.path.exists(path):
         raise FileNotFoundError(f"File not found: {path}")
     G = ox.load_graphml(path)
     nodes, edges = ox.convert.graph_to_gdfs(G, nodes=True, edges=True)
     return G, nodes, edges
+
 
 def find_bounding_box(G):
     north = max(G.nodes[node]["y"] for node in G.nodes)
@@ -21,7 +23,8 @@ def find_bounding_box(G):
     west = min(G.nodes[node]["x"] for node in G.nodes)
     return north, south, east, west
 
-def create_square_grid(north, south, east, west, output_geojson, grid_size=30):
+
+def create_square_grid(north, south, east, west, output_geojson, grid_size=10):
     if os.path.exists(output_geojson):
         print(f"File already exists: {output_geojson}")
         return
@@ -43,6 +46,7 @@ def create_square_grid(north, south, east, west, output_geojson, grid_size=30):
     print(f"Grid saved to {output_geojson}")
     return grid_gdf
 
+
 def plot_grid_with_map(G, grid_gdf, output_file):
     if os.path.exists(output_file):
         print(f"File already exists: {output_file}")
@@ -62,10 +66,12 @@ def plot_grid_with_map(G, grid_gdf, output_file):
     plt.close()
     print(f"Grid map saved to {output_file}")
 
+
 def load_final_transit_nodes(output_dir="preprocessing_output"):
     with open(f"{output_dir}/final_transit_nodes.json", "r") as f:
         transit_nodes = set(map(int, json.load(f)))
     return transit_nodes
+
 
 def assign_nodes_to_grid_and_find_boundaries(
     G, nodes, grid_gdf, output_dir="preprocessing_output"
@@ -113,15 +119,12 @@ def assign_nodes_to_grid_and_find_boundaries(
         f"Total transit nodes: {len(transit_nodes)}, Total boundary nodes: {len(boundary_crossing_edges)}"
     )
 
-    with open(f"{output_dir}/transit_nodes.json", "w") as f:
+    with open(f"{output_dir}/final_transit_nodes.json", "w") as f:
         json.dump(list(transit_nodes), f)
-    print(f"Saved transit nodes: {output_dir}/transit_nodes.json")
+    print(f"Saved transit nodes: {output_dir}/final_transit_nodes.json")
+
 
 def filter_final_transit_nodes(G, output_dir):
-    if os.path.exists(f"{output_dir}/final_transit_nodes.json"):
-        print(f"File already exists: {output_dir}/final_transit_nodes.json")
-        return
-    os.makedirs(output_dir, exist_ok=True)
 
     transit_nodes = load_final_transit_nodes(output_dir)
 
@@ -155,6 +158,7 @@ def filter_final_transit_nodes(G, output_dir):
 
     print(f"Saved final transit nodes: {output_dir}/final_transit_nodes.json")
 
+
 def compute_shortest_paths(G, node, transit_nodes):
     shortest_paths_length, shortest_paths_nodes = nx.single_source_dijkstra(
         G, node, weight="length"
@@ -173,13 +177,14 @@ def compute_shortest_paths(G, node, transit_nodes):
         },
     }
 
+
 def compute_transit_node_distances(G, output_dir="preprocessing_output"):
     os.makedirs(output_dir, exist_ok=True)
 
     transit_nodes = load_final_transit_nodes(output_dir)
 
     print(
-        f"Computing distances and paths for {len(transit_nodes)} transit nodes using multiprocessing..."
+        f"Computing distances and paths for {len(transit_nodes)} transit nodes uruns on all avilablee cores/ "
     )
 
     pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
@@ -190,15 +195,16 @@ def compute_transit_node_distances(G, output_dir="preprocessing_output"):
     pool.join()
 
     tnr_table = {node: data["distances"] for node, data in results}
-    tnr_paths = {node: data["paths"] for node, data in results}
+    # tnr_paths = {node: data["paths"] for node, data in results}
 
     with open(f"{output_dir}/transit_node_distances.json", "w") as f:
         json.dump(tnr_table, f)
 
-    with open(f"{output_dir}/transit_node_paths.json", "w") as f:
-        json.dump(tnr_paths, f)
+    # with open(f"{output_dir}/transit_node_paths.json", "w") as f:
+    #     json.dump(tnr_paths, f)
 
-    print(f"Saved transit node distances and paths in {output_dir}/")
+    print(f"Saved transit node distances in {output_dir}")
+
 
 def main():
     output_geojson = "resources/grid.geojson"
@@ -217,6 +223,7 @@ def main():
     assign_nodes_to_grid_and_find_boundaries(G, nodes, grid_gdf, output_dir)
     filter_final_transit_nodes(G, output_dir)
     compute_transit_node_distances(G, output_dir)
+
 
 import time
 
