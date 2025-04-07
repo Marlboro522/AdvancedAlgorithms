@@ -15,23 +15,25 @@ def main():
     # Configuration
     capacity = 8
     associativity = 2
-    sequence_length = 100
-    alphabet = list(range(10))  # Pages 0–9
+    sequence_length = 100000
+    alphabet = list(range(101))  # Pages 0–9
 
     # Generate semirandom sequence
     sequence = generate_array(alphabet, length=sequence_length, repeat_prob=0.6)
     # Uncomment below to test the grouped variant
-    sequence = generate_array_grouped(alphabet, length=sequence_length, group_size=2, group_repeat_prob=0.75)
+    sequence = generate_array_grouped(
+        alphabet, length=sequence_length, group_size=2, group_repeat_prob=0.75
+    )
 
-    print("Generated Sequence:")
-    print(sequence)
+    print("Generated Sequence of length", len(sequence))
+    # print(sequence)
 
-    # FIFO Simulation
+    # FIFO
     fifo_cache = FIFOCache(capacity=capacity, associativity=associativity)
     fifo_hit_rate = simulate_cache(fifo_cache, sequence)
     print(f"FIFO Hit Rate: {fifo_hit_rate:.2f}")
 
-    # Belady Simulation
+    # Belady
     belady_cache = BeladyCache(
         capacity=capacity, access_sequence=sequence, associativity=associativity
     )

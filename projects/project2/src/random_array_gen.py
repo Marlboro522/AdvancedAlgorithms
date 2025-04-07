@@ -86,10 +86,10 @@ def generate_array_grouped(alphabet, length, group_size, group_repeat_prob=0.66)
 # Example usage:
 alphabet = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
 generated_array = generate_array(alphabet, 100, repeat_prob=0.5)
-print("Generated array:", generated_array)
+# print("Generated array:", generated_array)
 
 alphabet = [1, 2, 3, 4, 5]
 generated_array = generate_array_grouped(
     alphabet, 100, group_size=2, group_repeat_prob=0.66
 )
-print("Generated array (grouped):", generated_array)
+# print("Generated array (grouped):", generated_array)
