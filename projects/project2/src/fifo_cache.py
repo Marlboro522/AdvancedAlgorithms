@@ -13,7 +13,7 @@ class FIFOCache:
             self.assoc = self.capacity
         self.sets = capacity // self.assoc
         self.cache = [[-1 for _ in range(self.assoc)] for _ in range(self.sets)]
-        self.pointers = [0 for _ in range(self.sets)]  # FIFO pointer per set
+        self.pointers = [0 for _ in range(self.sets)]
 
     def get(self, page: int) -> Optional[bool]:
         idx = page % self.sets
@@ -38,9 +38,6 @@ class FIFOCache:
         repr_str += "-" * 50 + "\n"
         return repr_str
 
-# -------------------------------
-# ✅ Test Cases
-# -------------------------------
 def test_fifo_cache():
     print("Running FIFO Cache Tests")
     cache = FIFOCache(capacity=4, associativity=2)
@@ -51,7 +48,7 @@ def test_fifo_cache():
     assert not cache.get(4), "Test 5 Failed: MISS expected"
     assert cache.get(3), "Test 6 Failed: HIT expected"
     assert not cache.get(5), "Test 7 Failed: MISS expected"
-    print("✅ FIFO Cache Tests Passed")
+    print("FIFO Cache Tests Passed")
 
 if __name__ == "__main__":
     test_fifo_cache()
