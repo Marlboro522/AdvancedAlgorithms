@@ -1,5 +1,5 @@
-from fifo_cache import FIFOCache
-from belady_cache import BeladyCache
+from fifo_cache1 import FIFOCache
+from belady_cache1 import BeladyCache
 from random_array_gen import generate_array, generate_array_grouped
 
 
@@ -15,7 +15,7 @@ def main():
     # Configuration
     capacity = 8
     associativity = 2
-    sequence_length = 100000
+    sequence_length = 100
     alphabet = list(range(101))  # Pages 0–9
 
     # Generate semirandom sequence
