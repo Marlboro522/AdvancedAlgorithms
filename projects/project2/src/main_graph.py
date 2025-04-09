@@ -11,6 +11,8 @@ import numpy as np
 import sys
 
 print(sys.executable)
+
+
 def simulate_cache(cache, sequence):
     hits = 0
     for page in sequence:
@@ -18,13 +20,16 @@ def simulate_cache(cache, sequence):
             hits += 1
     return hits / len(sequence)
 
+
 def run_experiments(trials=1000, capacity=8, sequence_length=100, repeat_prob=0.6):
     fifo_rates = []
     belady_rates = []
     alphabet = list(range(10))
 
     for _ in range(trials):
-        sequence = generate_array(alphabet, length=sequence_length, repeat_prob=repeat_prob)
+        sequence = generate_array(
+            alphabet, length=sequence_length, repeat_prob=repeat_prob
+        )
 
         fifo_cache = FIFOCache(capacity=capacity)
         fifo_hit_rate = simulate_cache(fifo_cache, sequence)
@@ -36,12 +41,13 @@ def run_experiments(trials=1000, capacity=8, sequence_length=100, repeat_prob=0.
 
     return fifo_rates, belady_rates
 
+
 def plot_results(fifo_rates, belady_rates):
     plt.figure(figsize=(10, 5))
 
     # Histogram
-    plt.hist(fifo_rates, bins=30, alpha=0.6, label='FIFO')
-    plt.hist(belady_rates, bins=30, alpha=0.6, label="Belady's OPT")
+    plt.hist(fifo_rates, bins=30, alpha=0.6, label="FIFO")
+    plt.hist(belady_rates, bins=30, alpha=0.6, label="Beladys")
     plt.xlabel("Hit Rate")
     plt.ylabel("Frequency")
     plt.title("Hit Rate Distribution over Multiple Trials")
@@ -53,7 +59,7 @@ def plot_results(fifo_rates, belady_rates):
 
     # Box plot
     plt.figure(figsize=(8, 5))
-    plt.boxplot([fifo_rates, belady_rates], labels=["FIFO", "Belady's OPT"])
+    plt.boxplot([fifo_rates, belady_rates], labels=["FIFO", "Beladys"])
     plt.ylabel("Hit Rate")
     plt.title("Hit Rate Comparison")
     plt.grid(True)
@@ -61,11 +67,13 @@ def plot_results(fifo_rates, belady_rates):
     plt.savefig("hit_rate_boxplot.png")
     plt.show()
 
+
 def main():
     fifo_rates, belady_rates = run_experiments()
     print(f"FIFO Average Hit Rate: {np.mean(fifo_rates):.4f}")
     print(f"Belady Average Hit Rate: {np.mean(belady_rates):.4f}")
     plot_results(fifo_rates, belady_rates)
+
 
 if __name__ == "__main__":
     main()
