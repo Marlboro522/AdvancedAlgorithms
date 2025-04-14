@@ -1,4 +1,3 @@
-
 class BeladyCache:
     def __init__(self, capacity: int, access_sequence: list[int]) -> None:
         self.capacity = capacity
@@ -27,6 +26,14 @@ class BeladyCache:
                     distances.append(float('inf'))
             victim_index = distances.index(max(distances))
             self.cache[victim_index] = page
+        
+    def runs(self,inputArray)->float:
+        hit_count: int = 0
+        for page in inputArray:
+            hit = self.get(page)
+            if(hit):
+                hit_count += 1
+        return hit_count/len(inputArray)
 
     def __repr__(self) -> str:
         return f"Belady Cache: {self.cache}"
