@@ -12,8 +12,8 @@
 *.tex
 
 # Ignore all PDF files and their folders
-*.pdf
-**/*.pdf
+# *.pdf
+# **/*.pdf
 
 
 # Python ignores
